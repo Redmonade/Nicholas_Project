@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking - Register Admin</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Luxury Hotel</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#rooms">Rooms</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="login.html" class="login-btn">Login</a></li>
+                <li><a href="signup.html" class="signup-btn">Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Register Admin Section -->
+    <section class="register-section">
+        <div class="register-container">
+            <h2>Register as Admin</h2>
+            <form id="registerAdminForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <button type="button" class="btn" onclick="registerAdmin()">Register Admin</button>
+            </form>
+            <button id="loginButton" class="btn-outline" style="display:none;" onclick="location.href='login.html'">Back to Login</button>
+        </div>
+    </section>
+
+    <script>
+        async function registerAdmin() {
+            const adminData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                email: document.getElementById('email').value,
+            };
+
+            try {
+                const response = await fetch('https://localhost:7216/api/Authenticate/register-admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(adminData)
+                });
+
+                if (response.ok) {
+                    alert('Admin registered successfully');
+                    document.getElementById('registerAdminForm').style.display = 'none';
+                    document.getElementById('loginButton').style.display = 'block';
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to register admin:', errorText);
+                    alert('Failed to register admin: ' + errorText);
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('Network error occurred. Please try again later.');
+            }
+        }
+    </script>
+</body>
+</html>

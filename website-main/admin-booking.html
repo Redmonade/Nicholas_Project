@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User - Manage Bookings</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Luxury Hotel</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#rooms">Rooms</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="login.html" class="login-btn">Log out</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Booking Management Section -->
+    <section class="booking-section">
+        <div class="booking-container">
+            <h2>Manage Your Bookings</h2>
+
+            <!-- Filter Bookings -->
+        <div class="booking-box filter-bookings">
+            <h3>Filter Bookings</h3>
+            <form id="filterForm">
+                <div class="form-group">
+                    <label for="filterName">Filter by Name:</label>
+                    <input type="text" id="filterName" name="filterName">
+                </div>
+                <div class="form-group">
+                    <label for="filterRoom">Filter by Room:</label>
+                    <select id="filterRoom" name="filterRoom">
+                        <option value="" selected>All Rooms</option>
+                        <option value="Standard Room">Standard Room</option>
+                        <option value="Deluxe Room">Deluxe Room</option>
+                        <option value="Suite Room">Suite Room</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterStatus">Filter by Status:</label>
+                    <select id="filterStatus" name="filterStatus">
+                        <option value="" selected>All Statuses</option>
+                        <option value="Booked">Booked</option>
+                        <option value="Unconfirmed">Unconfirmed</option>
+                    </select>
+                </div>
+                <button type="button" class="btn" onclick="filterBookings()">Apply Filter</button>
+            </form>
+        </div>
+
+            <!-- View User Bookings -->
+            <div class="booking-box view-user-bookings">
+                <h3>Your Bookings</h3>
+                <button class="btn" onclick="fetchUserBookings()">Load Your Bookings</button>
+                <div id="userBookingsList">
+                    <table id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Room</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Status</th>
+                                <th>Booked By</th> <!-- New Column -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Booking rows will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Create Booking -->
+            <div class="booking-box create-booking">
+                <h3>Create Booking</h3>
+                <form id="createBookingForm">
+                    <div class="form-group">
+                        <label for="createFacilityDescription">Select Room:</label>
+                        <select id="createFacilityDescription" name="createFacilityDescription" required>
+                            <option value="" disabled selected>Select Room</option>
+                            <option value="Standard Room">Standard Room</option>
+                            <option value="Deluxe Room">Deluxe Room</option>
+                            <option value="Suite Room">Suite Room</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="createBookingDateFrom">Booking Date From:</label>
+                        <input type="date" id="createBookingDateFrom" name="createBookingDateFrom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createBookingDateTo">Booking Date To:</label>
+                        <input type="date" id="createBookingDateTo" name="createBookingDateTo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createStatus">Status:</label>
+                        <select id="createStatus" name="createStatus" required>
+                            <option value="" disabled selected>Select Status</option>
+                            <option value="Booked">Booked</option>
+                            <option value="Unconfirmed">Unconfirmed</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn" onclick="createBooking()">Create Booking</button>
+                    <button type="button" class="btn-outline" onclick="clearCreateForm()">Clear Form</button>
+                </form>
+            </div>
+
+            <!-- Update Booking -->
+            <div class="booking-box update-booking">
+                <h3>Update Booking</h3>
+                <form id="updateBookingForm">
+                    <div class="form-group">
+                        <label for="updateBookingId">Booking ID:</label>
+                        <input type="text" id="updateBookingId" name="updateBookingId" required>
+                        <button type="button" class="btn" onclick="fetchBookingForUpdate()">Load Booking</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateFacilityDescription">Select Room:</label>
+                        <select id="updateFacilityDescription" name="updateFacilityDescription" required>
+                            <option value="" disabled>Select Room</option>
+                            <option value="Standard Room">Standard Room</option>
+                            <option value="Deluxe Room">Deluxe Room</option>
+                            <option value="Suite Room">Suite Room</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateBookingDateFrom">Booking Date From:</label>
+                        <input type="date" id="updateBookingDateFrom" name="updateBookingDateFrom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateBookingDateTo">Booking Date To:</label>
+                        <input type="date" id="updateBookingDateTo" name="updateBookingDateTo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateStatus">Status:</label>
+                        <select id="updateStatus" name="updateStatus" required>
+                            <option value="" disabled selected>Select Status</option>
+                            <option value="Booked">Booked</option>
+                            <option value="Unconfirmed">Unconfirmed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateBookedBy">Booked By:</label>
+                        <input type="text" id="updateBookedBy" name="updateBookedBy" disabled>
+                    </div>
+                    <button type="button" class="btn" onclick="updateBooking()">Update Booking</button>
+                    <button type="button" class="btn-outline" onclick="clearUpdateForm()">Clear Form</button>
+                </form>
+            </div>
+
+            <!-- Delete Booking -->
+            <div class="booking-box delete-booking">
+                <h3>Delete Booking</h3>
+                <form id="deleteForm">
+                    <div class="form-group">
+                        <label for="deleteBookingId">Booking ID:</label>
+                        <input type="text" id="deleteBookingId" name="deleteBookingId" required>
+                    </div>
+                    <button type="button" class="btn" onclick="deleteBooking()">Delete Booking</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Fetch User Bookings
+        function fetchUserBookings() {
+            fetch('https://localhost:7216/api/BookingDetails', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert('Your session has expired. Please log in again.');
+                        window.location.href = 'login.html'; // Redirect to login page
+                        return;
+                    } else {
+                        throw new Error('Failed to load bookings');
+                    }
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector('#bookingsTable tbody');
+                tableBody.innerHTML = '';
+                data.forEach(booking => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${booking.bookingId}</td>
+                        <td>${booking.facilityDescription}</td>
+                        <td>${booking.bookoingDateFrom}</td>
+                        <td>${booking.bookingDateTo}</td>
+                        <td>${booking.status}</td>
+                        <td>${booking.bookedBy}</td> <!-- New Field -->
+                    `;
+                    row.onclick = () => loadBookingDetailsForUpdate(booking);
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    
+        // Fetch Booking Details for Update
+        function fetchBookingForUpdate() {
+            const bookingId = document.getElementById('updateBookingId').value;
+    
+            if (!bookingId) {
+                alert('Please enter a Booking ID');
+                return;
+            }
+    
+            fetch(`https://localhost:7216/api/BookingDetails/${bookingId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert('Your session has expired. Please log in again.');
+                        window.location.href = 'login.html'; // Redirect to login page
+                        return;
+                    } else {
+                        throw new Error('Failed to load booking');
+                    }
+                }
+                return response.json();
+            })
+            .then(booking => {
+                document.getElementById('updateFacilityDescription').value = booking.facilityDescription;
+                document.getElementById('updateBookingDateFrom').value = booking.bookoingDateFrom.split('T')[0];
+                document.getElementById('updateBookingDateTo').value = booking.bookingDateTo.split('T')[0];
+                document.getElementById('updateStatus').value = booking.status;
+                document.getElementById('updateBookedBy').value = booking.bookedBy; // Populate Booked By
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Booking not found');
+            });
+        }
+    
+        // Create Booking
+        function createBooking() {
+            const bookingData = {
+                facilityDescription: document.getElementById('createFacilityDescription').value,
+                bookoingDateFrom: document.getElementById('createBookingDateFrom').value,
+                bookingDateTo: document.getElementById('createBookingDateTo').value,
+                status: document.getElementById('createStatus').value
+            };
+    
+            fetch('https://localhost:7216/api/BookingDetails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify(bookingData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Booking created successfully');
+                    clearCreateForm();
+                    fetchUserBookings();
+                } else {
+                    alert('Failed to create booking');
+                }
+            });
+        }
+    
+        // Update Booking
+        function updateBooking() {
+            const bookingId = document.getElementById('updateBookingId').value;
+    
+            if (!bookingId) {
+                alert('Please enter a Booking ID');
+                return;
+            }
+    
+            const bookingData = {
+                bookingId: bookingId,
+                facilityDescription: document.getElementById('updateFacilityDescription').value,
+                bookoingDateFrom: document.getElementById('updateBookingDateFrom').value,
+                bookingDateTo: document.getElementById('updateBookingDateTo').value,
+                status: document.getElementById('updateStatus').value
+            };
+    
+            fetch(`https://localhost:7216/api/BookingDetails/${bookingId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify(bookingData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Booking updated successfully');
+                    clearUpdateForm();
+                    fetchUserBookings();
+                } else {
+                    alert('Failed to update booking');
+                }
+            });
+        }
+    
+        // Delete Booking
+        function deleteBooking() {
+            const bookingId = document.getElementById('deleteBookingId').value;
+    
+            fetch(`https://localhost:7216/api/BookingDetails/${bookingId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Booking deleted successfully');
+                    fetchUserBookings();
+                } else {
+                    alert('Failed to delete booking');
+                }
+            });
+        }
+    
+        // Clear Create Form
+        function clearCreateForm() {
+            document.getElementById('createBookingForm').reset();
+        }
+    
+        // Clear Update Form
+        function clearUpdateForm() {
+            document.getElementById('updateBookingForm').reset();
+        }
+    
+        // Load Booking Details for Update (Helper function)
+        function loadBookingDetailsForUpdate(booking) {
+            document.getElementById('updateBookingId').value = booking.bookingId;
+            document.getElementById('updateFacilityDescription').value = booking.facilityDescription;
+            document.getElementById('updateBookingDateFrom').value = booking.bookoingDateFrom.split('T')[0];
+            document.getElementById('updateBookingDateTo').value = booking.bookingDateTo.split('T')[0];
+            document.getElementById('updateStatus').value = booking.status;
+            document.getElementById('updateBookedBy').value = booking.bookedBy; // Populate Booked By
+        }
+
+        // Filter Bookings
+function filterBookings() {
+    const name = document.getElementById('filterName').value;
+    const room = document.getElementById('filterRoom').value;
+    const status = document.getElementById('filterStatus').value;
+
+    let queryParams = new URLSearchParams();
+
+    if (name) queryParams.append('name', name);
+    if (room) queryParams.append('room', room);
+    if (status) queryParams.append('status', status);
+
+    fetch(`https://localhost:7216/api/BookingDetails/filter?${queryParams.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load filtered bookings');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tableBody = document.querySelector('#bookingsTable tbody');
+        tableBody.innerHTML = ''; // Clear the table body
+        data.forEach(booking => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${booking.bookingId}</td>
+                <td>${booking.facilityDescription}</td>
+                <td>${booking.bookoingDateFrom}</td>
+                <td>${booking.bookingDateTo}</td>
+                <td>${booking.status}</td>
+                <td>${booking.bookedBy}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+    </script>    
+    
+</body>
+</html>
